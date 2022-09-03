@@ -15,10 +15,16 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
   (err) => {
-    if(err){
+    if (err) {
       throw err;
     }
     console.log("Connected to MongoDB...");
+    const port = process.env.PORT || 3000;
+    const server = app.listen(port, () => {
+      console.log(`Listening at port http://localhost:${port}...`);
+    });
+
+    module.exports = server;
   }
 );
 
@@ -33,9 +39,4 @@ app.get("/", (req, res) => {
   return res.send("Sucessfully Setup");
 });
 
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-  console.log(`Listening at port http://localhost:${port}...`);
-});
-
-module.exports = server;
+// module.exports = server;
