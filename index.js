@@ -9,7 +9,7 @@ const loans = require("./routes/loans");
 const schedules = require("./routes/schedules");
 
 mongoose.connect(
-  "mongodb://localhost:27017/homeloansystem",
+  "mongodb://0.0.0.0:27017/homeloansystem",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
