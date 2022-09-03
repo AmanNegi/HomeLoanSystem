@@ -9,9 +9,16 @@ const loans = require("./routes/loans");
 const schedules = require("./routes/schedules");
 
 mongoose
-  .connect("mongodb://localhost:27017/homeloansystem", () => {
-    console.log("Connected to MongoDB...");
-  })
+  .connect(
+    "mongodb://localhost:27017/homeloansystem",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    },
+    () => {
+      console.log("Connected to MongoDB...");
+    }
+  )
   .catch((err) => {
     console.log("An Error occurred while connecting to MongoDB: " + err);
   });
