@@ -11,15 +11,21 @@ router.post("/", async (req, res) => {
       .status(404)
       .send({ success: true, message: error.details[0].message });
 
-  var exists = await User.findOne({ email: req.body.email });
+  try {
+    var exists = await User.findOne({ email: req.body.email });
+  } catch (e) {
+    return res.status(404).send({
+      success: true,
+      message: e.message,
+    });
+  }
+
   console.log(exists);
   if (exists) {
-    return res
-      .status(400)
-      .send({
-        success: true,
-        message: "A user with that email already exists.",
-      });
+    return res.status(400).send({
+      success: true,
+      message: "A user with that email already exists.",
+    });
   }
 
   const user = new User(req.body);
