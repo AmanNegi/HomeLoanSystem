@@ -23,6 +23,10 @@ app.use("/api/login", auth);
 app.use("/api/loans", loans);
 app.use("/api/schedules", schedules);
 
+app.get("/", (req, res) => {
+  return res.send("Sucessfully Setup");
+});
+
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`Listening at port http://localhost:${port}...`);
