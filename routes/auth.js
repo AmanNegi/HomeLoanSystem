@@ -3,6 +3,7 @@ const { default: mongoose } = require("mongoose");
 const { User, validate } = require("../models/user");
 
 router.post("/", async (req, res) => {
+  console.log(mongoose.connection.readyState);
   console.log(req.body);
   var { error } = validate(req.body);
 
