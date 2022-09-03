@@ -8,20 +8,19 @@ const auth = require("./routes/auth");
 const loans = require("./routes/loans");
 const schedules = require("./routes/schedules");
 
-mongoose
-  .connect(
-    "mongodb://localhost:27017/homeloansystem",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
-    () => {
-      console.log("Connected to MongoDB...");
+mongoose.connect(
+  "mongodb://localhost:27017/homeloansystem",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err) => {
+    if(err){
+      throw err;
     }
-  )
-  .catch((err) => {
-    console.log("An Error occurred while connecting to MongoDB: " + err);
-  });
+    console.log("Connected to MongoDB...");
+  }
+);
 
 // Used to get request json body
 app.use(express.json());
