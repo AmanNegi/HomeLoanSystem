@@ -8,14 +8,12 @@ const auth = require("./routes/auth");
 const loans = require("./routes/loans");
 const schedules = require("./routes/schedules");
 
-const uri = process.env.MONGO_CONNECTION_STRING;
-
 mongoose
-  .connect(uri, () => {
+  .connect("mongodb://localhost:27017/homeloansystem", () => {
     console.log("Connected to MongoDB...");
   })
   .catch((err) => {
-    console.log(err.message);
+    console.log("An Error occurred while connecting to MongoDB: " + err);
   });
 
 // Used to get request json body
