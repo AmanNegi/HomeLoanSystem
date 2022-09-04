@@ -31,7 +31,7 @@ mongoose.connect(
 // Used to get request json body
 app.use(express.json());
 
-app.use("/api/login", auth);
+app.use("/api/auth", auth);
 app.use("/api/loans", loans);
 app.use("/api/schedules", schedules);
 
