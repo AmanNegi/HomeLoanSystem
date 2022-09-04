@@ -3,7 +3,6 @@ const { default: mongoose } = require("mongoose");
 const { User, validate } = require("../models/user");
 
 router.post("/", async (req, res) => {
-  console.log(mongoose.connection.readyState);
   console.log(req.body);
   var { error } = validate(req.body);
 
@@ -31,18 +30,45 @@ router.post("/", async (req, res) => {
 
   const user = new User(req.body);
   user.save();
-  return res.status(200).send(user);
+  return res.status(200).send({ success: true, data: user });
 });
 
 router.get("/:id", async (req, res) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(404).send("Invalid ID");
+    return res.status(404).send({
+      success: false,
+      message: "Invalid ID provided",
+    });
   }
   const user = await User.findById(req.params.id);
   if (!user) {
-    return res.status(404).send(`No user with ID '${req.params.id}' exists `);
+    return res.status(404).send({
+      success: false,
+      message: `No user with ID '${req.params.id}' exists `,
+    });
   }
-  res.status(200).send(user);
+  res.status(200).send({ success: false, data: user });
+});
+
+router.get("/find/:email", async (req, res) => {
+  if (!req.params.email || req.params.email.length <= 0) {
+    return res.status(404).send({
+      success: false,
+      message: "Pass a valid email address",
+    });
+  }
+  var user = await User.findOne({ email: req.params.email });
+  if (!user) {
+    return res.status(404).send({
+      success: false,
+      message: "No user exists with the given email address",
+    });
+  }
+
+  return res.status(200).send({
+    success: true,
+    data: user,
+  });
 });
 
 module.exports = router;
