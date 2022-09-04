@@ -9,7 +9,8 @@ const loans = require("./routes/loans");
 const schedules = require("./routes/schedules");
 
 mongoose.connect(
-  process.env.DATABASE_URL,
+  // process.env.DATABASE_URL,
+  "mongodb://localhost/homeloansystem",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

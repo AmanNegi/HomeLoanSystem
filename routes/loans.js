@@ -4,6 +4,26 @@ const { LoanAccount, validate } = require("../models/loan_account");
 const { User } = require("../models/user");
 const { Schedule } = require("../models/schedule");
 const { calculateEmi, getScheduleList } = require("../helper/calculations");
+const { errorHandler, successHandler } = require("../helper/response_handler");
+
+router.get("/:userId", async (req, res) => {
+  var userId = req.params.userId;
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return errorHandler(res, "Invalid User Identity");
+  }
+
+  try {
+    var user = await User.findById(userId);
+    if (!user) {
+      return errorHandler(res, "No user exists with this ID.");
+    }
+    var data = LoanAccount.find({ userId: userId });
+
+    return successHandler(res, data);
+  } catch (err) {
+    return errorHandler(res, err.message);
+  }
+});
 
 //Function to create a new loan account
 router.post("/", async (req, res) => {
@@ -79,20 +99,17 @@ router.post("/", async (req, res) => {
 router.post("/pay:accountId", async (req, res) => {
   var accountId = req.params.accountId;
   if (!mongoose.Types.ObjectId.isValid(accountId)) {
-    return res.status(404).send("Invalid ID Provided");
+    return errorHandler(res, "Invalid ID Provided");
   }
 
   try {
     let loanAccount = await Schedule.findOne({ loanId: accountId });
-    if (!loanAccount) return res.status(404).send("Account not found");
+    if (!loanAccount) return errorHandler(res, "Account not found");
 
     var user = await User.findById(loanAccount.userId);
 
     if (!user)
-      return res.status(404).send({
-        success: false,
-        message: "Did not find the user linked to the account",
-      });
+      return errorHandler(res, "Did not find the user linked to the account");
 
     //TODO: Set the next month to active
 
@@ -111,12 +128,10 @@ router.post("/pay:accountId", async (req, res) => {
     await user.save();
     await loanAccount.save();
 
-    return res.status(200).send(
-      {
-        success: true,
-        message: "EMI was successfully payed."
-      }
-    );
+    return res.status(200).send({
+      success: true,
+      message: "EMI was successfully payed.",
+    });
   } catch (err) {
     return res.status(401).send(err.message);
   }
