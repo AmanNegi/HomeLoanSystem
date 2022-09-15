@@ -13,6 +13,7 @@ const loanAccountScheme = mongoose.Schema({
   totalLoanAmount: {
     type: Number,
     required: true,
+    min: 10000,
   },
   tenureInYears: {
     type: Number,

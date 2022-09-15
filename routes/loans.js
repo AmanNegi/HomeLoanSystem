@@ -14,10 +14,11 @@ router.get("/:userId", async (req, res) => {
 
   try {
     var user = await User.findById(userId);
+    
     if (!user) {
       return errorHandler(res, "No user exists with this ID.");
     }
-    var data = LoanAccount.find({ userId: userId });
+    var data = await LoanAccount.find({ userId: userId });
 
     return successHandler(res, data);
   } catch (err) {
@@ -30,16 +31,16 @@ router.post("/", async (req, res) => {
   const { error } = validate(req.body);
 
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return errorHandler(res,error.details[0].message);
   }
 
   if (!mongoose.Types.ObjectId.isValid(req.body.userId)) {
-    return res.status(400).send("Invalid User Identity");
+    return errorHandler(res,"Invalid User Identity");
   }
 
   if (req.body.monthlySalary * 50 < req.body.totalLoanAmount) {
     return res.status(406).send({
-      success: true,
+      success: false,
       message: "You can not apply for loan of this amount.",
       applicableAmount: req.body.monthlySalary * 50,
     });
@@ -59,7 +60,7 @@ router.post("/", async (req, res) => {
       email: 1,
       _id: 1,
     });
-    if (!user) return res.status(404).send("User not found");
+    if (!user) return errorHandler(res,"User not found");
 
     account = await account.save();
 
@@ -92,7 +93,7 @@ router.post("/", async (req, res) => {
       schedule: schedule,
     });
   } catch (err) {
-    return res.status(401).send(err.message);
+    return errorHandler(res, err.message);
   }
 });
 
