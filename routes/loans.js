@@ -117,9 +117,9 @@ router.post("/pay/:accountId", async (req, res) => {
 
     var { schedule, currentMonth } = loanAccount;
 
-    schedule[currentMonth].status = "completed";
+    schedule[currentMonth - 1].status = "completed";
     currentMonth = currentMonth + 1;
-    schedule[currentMonth].status = "active";
+    schedule[currentMonth - 1].status = "active";
 
     loanAccount.schedule = schedule;
     loanAccount.currentMonth = currentMonth;
